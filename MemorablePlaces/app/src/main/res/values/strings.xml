@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">MemorablePlaces</string>
     <string name="title_activity_maps">Map</string>
+
+    <string-array name="group">
+        <item>Ram</item>
+        <item>Shyam</item>
+    </string-array>
+
+    <string-array name="contacts">
+        <item>8542835667</item>
+        <item>9891054606</item>
+    </string-array>
 </resources>

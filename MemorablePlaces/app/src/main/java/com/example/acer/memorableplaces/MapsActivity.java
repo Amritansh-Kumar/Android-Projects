@@ -109,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int positon = intent.getIntExtra("position", 0);
         // if element at 0th index is clicked than add a new place
 //        if (positon == 0 && intent.getBooleanExtra("firstAdd", true) == true) {
-        if (positon == 0 && intent.getIntExtra("first", 0) == 1) {
+//        if (positon == 0 && intent.getIntExtra("first", 0) == 1) {
             MainActivity.setFirsttAdd(false);
 
             mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -153,6 +153,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.setMyLocationEnabled(true);
             }
 
+
+        if (positon == 0 && intent.getIntExtra("first", 0) == 1) {
+                LatLng loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 11));
 
         } else if (positon == 0 && intent.getIntExtra("first", 0) != 1) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MainActivity.locations.get(1), 11));
@@ -292,5 +296,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mMap.clear();
+    }
 }
