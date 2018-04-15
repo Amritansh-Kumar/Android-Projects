@@ -84,11 +84,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                if (origin == false && dest == false) {
+
                     intent.putExtra("position", i);
                     intent.putStringArrayListExtra("placesList", (ArrayList<String>) placesList);
                     startActivity(intent);
-                }
             }
         });
 

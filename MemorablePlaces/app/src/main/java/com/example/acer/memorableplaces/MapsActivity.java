@@ -211,6 +211,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 try {
                     addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
                     if (addressList != null && addressList.size() > 0) {
+                        int addlinesize = addressList.get(0).getMaxAddressLineIndex();
+                        for (int i=0; i<addlinesize; i++){
+                            if (addressList.get(0).getAddressLine(i) != null){
+                                address += addressList.get(0).getAddressLine(i);
+                            }
+                        }
+
                         if (addressList.get(0).getThoroughfare() != null) {
                             if (addressList.get(0).getSubThoroughfare() != null) {
                                 address += addressList.get(0).getSubThoroughfare() + ", ";
@@ -235,27 +242,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 options.position(latLng)
                 .title(address);
 
-//                if (MainActivity.placesList.size() == 1){
-//                    origin = latLng;
-//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-//                }else if (MainActivity.placesList.size() == 2){
-//                    destination = latLng;
-//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-//                }else {
-//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-//                }
-
-                if (MainActivity.origin == true && MainActivity.dest == true){
-                    MainActivity.setOrigin(false);
+                if (MainActivity.placesList.size() == 1){
                     origin = latLng;
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                }else if (MainActivity.origin == false && MainActivity.dest == true){
-                    MainActivity.setDest(false);
+                }else if (MainActivity.placesList.size() == 2){
                     destination = latLng;
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                 }else {
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 }
+                
 
                 // adding marker on the checkpoint
                 mMap.addMarker(options);
