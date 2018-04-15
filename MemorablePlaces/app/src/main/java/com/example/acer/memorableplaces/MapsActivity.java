@@ -233,6 +233,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (origin != null && destination != null) {
                     url = getUrl(origin, destination);
                     Log.e("URL is", url);
+                    Toast.makeText(getBaseContext(), "got url", Toast.LENGTH_SHORT).show();
 
                     MyDownloadTask downloadTask = new MyDownloadTask(mMap);
                     downloadTask.execute(url);
@@ -284,6 +285,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (origin != null && destination != null) {
             url = getUrl(origin, destination);
             Log.e("URL is", url);
+            Toast.makeText(getBaseContext(), "got url", Toast.LENGTH_SHORT).show();
 
             MyDownloadTask downloadTask = new MyDownloadTask(mMap);
             downloadTask.execute(url);

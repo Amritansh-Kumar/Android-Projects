@@ -9,7 +9,12 @@
     tools:context="com.example.acer.memorableplaces.MainActivity">
 
 
-
+<Button
+    android:id="@+id/new_tour"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:text="New Tour"/>
 
     <ListView
         android:id="@+id/listView"
