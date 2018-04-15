@@ -46,11 +46,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Intent intent;
     private List<LatLng> checkpoints;
     private List<String> checkpointNames;
-    private LatLng origin;
-    private LatLng destination;
+    private LatLng origin, destination;
     private String url;
-
-    private List<LatLng> markerPoints;
 
 
     @Override
@@ -66,7 +63,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         intent = getIntent();
         checkpoints = MainActivity.locations;
         checkpointNames = MainActivity.placesList;
-
     }
 
 
@@ -111,9 +107,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         int positon = intent.getIntExtra("position", 0);
-
         // if element at 0th index is clicked than add a new place
-        if (positon == 0) {
+//        if (positon == 0 && intent.getBooleanExtra("firstAdd", true) == true) {
+        if (positon == 0 && intent.getIntExtra("first", 0) == 1) {
+            MainActivity.setFirsttAdd(false);
 
             mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -157,48 +154,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
 
+        } else if (positon == 0 && intent.getIntExtra("first", 0) != 1) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MainActivity.locations.get(1), 11));
+            plot();
         }
         // if elment from the list other than that present at 0th index is clicked than show that place on the map
         else {
 
+
             LatLng placeLocation = MainActivity.locations.get(positon);
             String placeName = MainActivity.placesList.get(positon);
 
-            for (int i = 1; i < checkpoints.size(); i++) {
-
-                // adding a marker at the clicked positon
-                MarkerOptions options = new MarkerOptions();
-                options.position(checkpoints.get(i))
-                        .title(checkpointNames.get(i));
-
-                if (i == 1){
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                    origin = checkpoints.get(1);
-                }else if (i == 2){
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-                    destination = checkpoints.get(2);
-                }else {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                }
-
-                // adding marker on the checkpoint
-                mMap.addMarker(options);
-
-//                mMap.addMarker(new MarkerOptions().position(checkpoints.get(i)).title(checkpointNames.get(i)));
-            }
-
-            if (origin != null && destination != null) {
-                url = getUrl(origin, destination);
-                Log.e("URL is", url);
-                Toast.makeText(getBaseContext(), "got url", Toast.LENGTH_SHORT).show();
-
-                MyDownloadTask downloadTask = new MyDownloadTask(mMap);
-                downloadTask.execute(url);
-            }
+            plot();
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placeLocation, 14));
 
         }
-
 
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -212,8 +182,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
                     if (addressList != null && addressList.size() > 0) {
                         int addlinesize = addressList.get(0).getMaxAddressLineIndex();
-                        for (int i=0; i<addlinesize; i++){
-                            if (addressList.get(0).getAddressLine(i) != null){
+                        for (int i = 0; i < addlinesize; i++) {
+                            if (addressList.get(0).getAddressLine(i) != null) {
                                 address += addressList.get(0).getAddressLine(i);
                             }
                         }
@@ -240,18 +210,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // adding a marker at the clicked positon
                 MarkerOptions options = new MarkerOptions();
                 options.position(latLng)
-                .title(address);
+                        .title(address);
 
-                if (MainActivity.placesList.size() == 1){
+                if (MainActivity.placesList.size() == 1) {
                     origin = latLng;
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                }else if (MainActivity.placesList.size() == 2){
+                } else if (MainActivity.placesList.size() == 2) {
                     destination = latLng;
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-                }else {
+                } else {
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 }
-                
+
 
                 // adding marker on the checkpoint
                 mMap.addMarker(options);
@@ -262,8 +232,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 if (origin != null && destination != null) {
                     url = getUrl(origin, destination);
-                     Log.e("URL is", url);
-                     Toast.makeText(getBaseContext(), "got url", Toast.LENGTH_SHORT).show();
+                    Log.e("URL is", url);
 
                     MyDownloadTask downloadTask = new MyDownloadTask(mMap);
                     downloadTask.execute(url);
@@ -286,6 +255,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
 
         return url;
+    }
+
+    private void plot() {
+        for (int i = 1; i < checkpoints.size(); i++) {
+
+            // adding a marker at the clicked positon
+            MarkerOptions options = new MarkerOptions();
+            options.position(checkpoints.get(i))
+                    .title(checkpointNames.get(i));
+
+            if (i == 1) {
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                origin = checkpoints.get(1);
+            } else if (i == 2) {
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                destination = checkpoints.get(2);
+            } else {
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            }
+
+            // adding marker on the checkpoint
+            mMap.addMarker(options);
+
+//                mMap.addMarker(new MarkerOptions().position(checkpoints.get(i)).title(checkpointNames.get(i)));
+        }
+
+        if (origin != null && destination != null) {
+            url = getUrl(origin, destination);
+            Log.e("URL is", url);
+
+            MyDownloadTask downloadTask = new MyDownloadTask(mMap);
+            downloadTask.execute(url);
+        }
     }
 
 
