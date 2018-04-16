@@ -1,22 +1,22 @@
     package com.example.acer.memorableplaces;
 
     import android.annotation.SuppressLint;
-    import android.content.Intent;
-    import android.net.Uri;
-    import android.os.Bundle;
-    import android.support.v7.app.AppCompatActivity;
-    import android.view.View;
-    import android.widget.AdapterView;
-    import android.widget.ArrayAdapter;
-    import android.widget.Button;
-    import android.widget.EditText;
-    import android.widget.ListView;
-    import android.widget.Toast;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
-    import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLng;
 
-    import java.util.ArrayList;
-    import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
     public class MainActivity extends AppCompatActivity {
 
@@ -37,9 +37,7 @@
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
-            if (savedInstanceState != null) {
-                firsttAdd = savedInstanceState.getBoolean("firsttAdd");
-            }
+
             mGroupList = findViewById(R.id.group_list);
             mAddButton = findViewById(R.id.add_member_button);
             mRenewButton = findViewById(R.id.renew_button);
@@ -52,11 +50,19 @@
             locations = new ArrayList<LatLng>();
             locations.add(new LatLng(0, 0));
 
-            listView = findViewById(R.id.listView);
-            adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, placesList);
 
             mMembersList = new ArrayList<>();
             mContactsList = new ArrayList<>();
+
+            listView = findViewById(R.id.listView);
+            adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, placesList);
+
+            if (savedInstanceState != null) {
+                firsttAdd = savedInstanceState.getBoolean("firsttAdd");
+                placesList = savedInstanceState.getStringArrayList("placesList");
+                mMembersList = savedInstanceState.getStringArrayList("membersList");
+                mContactsList = savedInstanceState.getStringArrayList("contactsList");
+            }
 
             mGroupAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mMembersList);
             mGroupList.setAdapter(mGroupAdapter);
@@ -92,7 +98,7 @@
             mAddButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mMembersList.size() == 0){
+                    if (mMembersList.size() == 0 || mMembersList == null){
                         Toast.makeText(getApplicationContext(), " first enter name of the user", Toast.LENGTH_SHORT).show();
                     }
 
@@ -150,11 +156,7 @@
             return contact.size();
         }
 
-        @Override
-        protected void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-            outState.putBoolean("first", firsttAdd);
-        }
+
 
         // method to send message to the group members
         private void sendMessages(String place){
@@ -176,5 +178,49 @@
             }else {
                 Toast.makeText(getApplicationContext(), "No contacts to send messages", Toast.LENGTH_SHORT).show();
             }
+        }
+
+//        @Override
+//        protected void onResume() {
+//            super.onResume();
+//            SharedPreferences preferences = getApplicationContext().getSharedPreferences("pref", Context.MODE_PRIVATE);
+//            if ((List<String>) preferences.getStringSet("placesList", null) != null) {
+//                placesList = (List<String>) preferences.getStringSet("placesList", null);
+//            }
+//            if ((List<String>) preferences.getStringSet("placesList", null) != null) {
+//                mMembersList = (List<String>) preferences.getStringSet("placesList", null);
+//            }
+//            if ((List<String>) preferences.getStringSet("placesList", null) != null) {
+//                mContactsList = (List<String>) preferences.getStringSet("placesList", null);
+//            }
+//            firsttAdd = preferences.getBoolean("first", true);
+//        }
+
+//        @Override
+//        protected void onPause() {
+//            super.onPause();
+//            SharedPreferences preferences = getApplicationContext().getSharedPreferences("pref", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = preferences.edit();
+//
+////            public static List<String> placesList, mMembersList, mContactsList;
+////            public static List<LatLng> locations;
+//
+//
+//
+//            editor.putStringSet("placesList", (Set<String>) placesList);
+//            editor.putStringSet("membersList", (Set<String>) mMembersList);
+//            editor.putStringSet("contactsList", (Set<String>) mContactsList);
+//            editor.putBoolean("first", firsttAdd);
+//            editor.commit();
+////            editor.putStringSet("locations", (Set<String>) locations);
+//        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            outState.putStringArrayList("placesList", (ArrayList<String>) placesList);
+            outState.putStringArrayList("membersList", (ArrayList<String>) mMembersList);
+            outState.putStringArrayList("contactsList", (ArrayList<String>) mContactsList);
+            outState.putBoolean("first", firsttAdd);
+            super.onSaveInstanceState(outState);
         }
     }
