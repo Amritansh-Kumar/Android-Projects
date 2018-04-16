@@ -20,24 +20,17 @@
 
     public class MainActivity extends AppCompatActivity {
 
-        public static List<String> placesList;
+        public static List<String> placesList, mMembersList, mContactsList;
         public static List<LatLng> locations;
-        public static ArrayAdapter adapter;
-        private ListView listView;
-
-
-        private ListView mGroupList;
+        public static ArrayAdapter adapter, mGroupAdapter;
+        private ListView listView, mGroupList;
         private Button mAddButton, mRenewButton;
         private EditText mName, mContact;
-        private ArrayAdapter mGroupAdapter;
-        public static List<String> mMembersList;
-        public static List<String> mContactsList;
+        public static boolean firsttAdd = true;
 
         public static void setFirsttAdd(boolean first) {
             firsttAdd = first;
         }
-
-        public static boolean firsttAdd = true;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +40,14 @@
             if (savedInstanceState != null) {
                 firsttAdd = savedInstanceState.getBoolean("firsttAdd");
             }
+            mGroupList = findViewById(R.id.group_list);
+            mAddButton = findViewById(R.id.add_member_button);
+            mRenewButton = findViewById(R.id.renew_button);
+            mName = findViewById(R.id.member_name);
+            mContact = findViewById(R.id.member_contact);
 
-            placesList = new ArrayList<String>();
+            placesList = new ArrayList<>();
             placesList.add("Add checkpoints");
-
 
             locations = new ArrayList<LatLng>();
             locations.add(new LatLng(0, 0));
@@ -58,20 +55,14 @@
             listView = findViewById(R.id.listView);
             adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, placesList);
 
-            mGroupList = findViewById(R.id.group_list);
-            mAddButton = findViewById(R.id.add_member_button);
-            mRenewButton = findViewById(R.id.renew_button);
-            mName = findViewById(R.id.member_name);
-            mContact = findViewById(R.id.member_contact);
-
             mMembersList = new ArrayList<>();
             mContactsList = new ArrayList<>();
 
             mGroupAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mMembersList);
             mGroupList.setAdapter(mGroupAdapter);
 
-
             listView.setAdapter(adapter);
+            // zooming to the checkpoint at the clicked position
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @SuppressLint("RestrictedApi")
                 @Override
@@ -88,6 +79,7 @@
                     }
             });
 
+            // sending a message to the members of the group mentioning the checkpoint clicked
             listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -96,7 +88,7 @@
                 }
             });
 
-
+            // adding a member to the group
             mAddButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -124,7 +116,7 @@
                 }
             });
 
-
+            // creating a new list of group members
             mRenewButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -134,7 +126,7 @@
                 }
             });
 
-
+            // removing the clicked member from the group list
             mGroupList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -148,6 +140,7 @@
 
         }
 
+        // helper method to validate the phone number
         private int getNumber(String number){
             char[] numb = number.toCharArray();
             List<Integer> contact = new ArrayList<>();
@@ -163,8 +156,9 @@
             outState.putBoolean("first", firsttAdd);
         }
 
+        // method to send message to the group members
         private void sendMessages(String place){
-            List<String> numberList =mContactsList;
+            List<String> numberList = mContactsList;
 
             if (numberList != null) {
                 String toNumbers = "";
@@ -172,7 +166,7 @@
                     toNumbers = toNumbers + s + ";";
                 }
                 toNumbers = toNumbers.substring(0, toNumbers.length() - 1);
-                String message = mMembersList.get(0) + "Reached" + place;
+                String message = mMembersList.get(0) + " Reached " + place;
 
                 Uri sendSmsTo = Uri.parse("smsto:" + toNumbers);
                 Intent intent = new Intent(

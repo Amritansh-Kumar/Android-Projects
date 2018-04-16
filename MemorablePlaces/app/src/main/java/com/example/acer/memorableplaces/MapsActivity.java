@@ -54,6 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -66,18 +67,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    // method to set the geocode
+    // method to set put a marker at users current location
     private void setLocation(Location mLocation) {
 
-
         LatLng userLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-
-//        mMap.clear();
-
         if (showMarker == 1) {
             mMap.addMarker(new MarkerOptions().position(userLocation).title("your location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         }
-
         mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.latitude, userLocation.longitude), 12.0f));
     }
@@ -90,100 +86,79 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (grantResults != null && grantResults.length > 0) {
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
                 mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
                 mLastLocation = mLocationManager.getLastKnownLocation(mLocationManager.GPS_PROVIDER);
                 setLocation(mLastLocation);
             }
-
-
         }
     }
-
 
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         int positon = intent.getIntExtra("position", 0);
-        // if element at 0th index is clicked than add a new place
-//        if (positon == 0 && intent.getBooleanExtra("firstAdd", true) == true) {
-//        if (positon == 0 && intent.getIntExtra("first", 0) == 1) {
-            MainActivity.setFirsttAdd(false);
+        MainActivity.setFirsttAdd(false);
 
-            mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        mLocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {}
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {}
+            @Override
+            public void onProviderEnabled(String s) {}
+            @Override
+            public void onProviderDisabled(String s) {}
+        };
 
-            mLocationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-//                        setLocation(location);
+        // checking the version to request GPS permission from the user
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-                }
-
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String s) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String s) {
-
-                }
-            };
-
-
-            // if build version is less than 23 than permission is not required
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
-                    mLastLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    mMap.setMyLocationEnabled(true);
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                }
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
                 mLastLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 mMap.setMyLocationEnabled(true);
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
 
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
 
+            mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+            mLastLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            mMap.setMyLocationEnabled(true);
+        }
+
+        // checking if no checkpoint is added
         if (positon == 0 && intent.getIntExtra("first", 0) == 1) {
-                LatLng loc;
-                if (mLastLocation != null) {
-                     loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                }else {
-                     loc = new LatLng(28.7041, 77.1025);
-                }
+
+            LatLng loc;
+            if (mLastLocation != null) {
+                loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            } else {
+                loc = new LatLng(28.7041, 77.1025);
+            }
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 11));
 
         } else if (positon == 0 && intent.getIntExtra("first", 0) != 1) {
+
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MainActivity.locations.get(1), 11));
             plot();
         }
         // if elment from the list other than that present at 0th index is clicked than show that place on the map
         else {
 
-
             LatLng placeLocation = MainActivity.locations.get(positon);
             String placeName = MainActivity.placesList.get(positon);
-
             plot();
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placeLocation, 14));
-
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placeLocation, 12));
         }
 
-
+        // adding a marker on clicking the map at the clicked point
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-//                mMap.clear();
 
                 String address = "";
                 geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
@@ -203,7 +178,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                             address += addressList.get(0).getThoroughfare();
                         }
-
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -213,10 +187,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm  dd-mm-yyyy");
                     address = dateFormat.format(new Date());
-
                 }
 
-                // adding a marker at the clicked positon
                 MarkerOptions options = new MarkerOptions();
                 options.position(latLng)
                         .title(address);
@@ -232,7 +204,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
 
-                // adding marker on the checkpoint
+                // adding a marker at the clicked positon
                 mMap.addMarker(options);
                 Toast.makeText(getApplicationContext(), "Location saved", Toast.LENGTH_SHORT).show();
                 MainActivity.placesList.add(address);
@@ -242,7 +214,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (origin != null && destination != null) {
                     url = getUrl(origin, destination);
                     Log.e("URL is", url);
-                    Toast.makeText(getBaseContext(), "got url", Toast.LENGTH_SHORT).show();
 
                     MyDownloadTask downloadTask = new MyDownloadTask(mMap);
                     downloadTask.execute(url);
@@ -251,7 +222,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
-
 
     // helper method to generate URL
     private String getUrl(LatLng orgn, LatLng dest) {
@@ -288,14 +258,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // adding marker on the checkpoint
             mMap.addMarker(options);
 
-//                mMap.addMarker(new MarkerOptions().position(checkpoints.get(i)).title(checkpointNames.get(i)));
         }
 
         if (origin != null && destination != null) {
             url = getUrl(origin, destination);
             Log.e("URL is", url);
-            Toast.makeText(getBaseContext(), "got url", Toast.LENGTH_SHORT).show();
-
             MyDownloadTask downloadTask = new MyDownloadTask(mMap);
             downloadTask.execute(url);
         }

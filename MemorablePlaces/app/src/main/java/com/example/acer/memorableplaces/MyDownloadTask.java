@@ -23,7 +23,7 @@ public class MyDownloadTask extends AsyncTask<String, Void, String> {
         this.myMap = map;
     }
 
-
+    // downloading data from the given url in background
     @Override
     protected String doInBackground(String... urls) {
         String urlResult = "";
@@ -35,8 +35,6 @@ public class MyDownloadTask extends AsyncTask<String, Void, String> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-//            Toast.makeText(context, "all good", Toast.LENGTH_SHORT).show();
         }
         return urlResult;
     }
@@ -44,15 +42,12 @@ public class MyDownloadTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-//        super.onPostExecute(result);
         Log.e("onPostExecute", "recieved result");
         ParseResponseData parseResponseData = new ParseResponseData(this.myMap);
         parseResponseData.execute(result);
-
-//        MapsActivity.ParseResponseDataTask mapsJsonResponse = new MapsActivity.ParseResponseDataTask(this.myMap);
-//        mapsJsonResponse.execute(result);
     }
 
+    // method to download data from the given url
     private String downloadDataFromUrl(String dataUrl) throws IOException {
         String responseData = "";
         HttpURLConnection urlConnection = null;

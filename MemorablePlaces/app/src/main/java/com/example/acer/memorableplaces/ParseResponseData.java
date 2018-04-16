@@ -28,6 +28,7 @@ public class ParseResponseData extends AsyncTask<String, Void, List<List<HashMap
         this.mMap = mMap;
     }
 
+    // parsing the data downloaded in JSON form
     @Override
     protected List<List<HashMap<String, String>>> doInBackground(String... jsonResponse) {
         List<List<HashMap<String, String>>> routes = null;
@@ -46,6 +47,7 @@ public class ParseResponseData extends AsyncTask<String, Void, List<List<HashMap
         return routes;
     }
 
+    // plotting the route
     @Override
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
 
@@ -79,16 +81,6 @@ public class ParseResponseData extends AsyncTask<String, Void, List<List<HashMap
 
         }
         mMap.addPolyline(polylineOptions);
-//        }else {
-//            Toast.makeText(context, "emty", Toast.LENGTH_SHORT).show();
-//        }
-//        if (this.mMap != null && polylineOptions != null){
-//            Log.e("ParseResponseData", "drawing lines");
-//            this.mMap.addPolyline(polylineOptions);
-//        }
-//        else {
-//            Log.d("onPostExecute","without Polylines drawn");
-//        }
 
     }
 }
