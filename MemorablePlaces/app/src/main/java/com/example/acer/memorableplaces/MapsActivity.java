@@ -72,7 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng userLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
 
-        mMap.clear();
+//        mMap.clear();
 
         if (showMarker == 1) {
             mMap.addMarker(new MarkerOptions().position(userLocation).title("your location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
@@ -155,7 +155,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         if (positon == 0 && intent.getIntExtra("first", 0) == 1) {
-                LatLng loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                LatLng loc;
+                if (mLastLocation != null) {
+                     loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                }else {
+                     loc = new LatLng(28.7041, 77.1025);
+                }
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 11));
 
         } else if (positon == 0 && intent.getIntExtra("first", 0) != 1) {

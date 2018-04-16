@@ -8,50 +8,50 @@
     tools:context="com.example.acer.memorableplaces.GroupInfo"
     android:layout_margin="15dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Add user and group members:"/>
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textSize="20sp"-->
+        <!--android:text="Add user and group members:"/>-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
 
-        <Button
-            android:id="@+id/add_member_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:text="Add Member"
-            android:layout_height="wrap_content" />
+        <!--<Button-->
+            <!--android:id="@+id/add_member_button"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="Add Member"-->
+            <!--android:layout_height="wrap_content" />-->
 
-        <Button
-            android:id="@+id/renew_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:text="Renew List"
-            android:layout_height="wrap_content" />
+        <!--<Button-->
+            <!--android:id="@+id/renew_button"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="Renew List"-->
+            <!--android:layout_height="wrap_content" />-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
-    <EditText
-        android:id="@+id/member_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textCapWords"
-        android:hint="Name"/>
+    <!--<EditText-->
+        <!--android:id="@+id/member_name"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="textCapWords"-->
+        <!--android:hint="Name"/>-->
 
-    <EditText
-        android:id="@+id/member_contact"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="Contact"/>
+    <!--<EditText-->
+        <!--android:id="@+id/member_contact"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="number"-->
+        <!--android:hint="Contact"/>-->
 
-    <ListView
-        android:id="@+id/group_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+    <!--<ListView-->
+        <!--android:id="@+id/group_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"></ListView>-->
 
 </LinearLayout>
