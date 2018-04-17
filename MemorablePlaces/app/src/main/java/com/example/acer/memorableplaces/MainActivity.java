@@ -1,7 +1,9 @@
     package com.example.acer.memorableplaces;
 
     import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,13 +26,24 @@ import java.util.List;
         public static List<LatLng> locations;
         public static ArrayAdapter adapter, mGroupAdapter;
         private ListView listView, mGroupList;
-        private Button mAddButton, mRenewButton;
+        private Button mAddButton, mRenewButton, mTripButton;
         private EditText mName, mContact;
         public static boolean firsttAdd = true;
 
         public static void setFirsttAdd(boolean first) {
             firsttAdd = first;
         }
+
+//        @Override
+//        protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//                if (savedInstanceState != null) {
+//                firsttAdd = savedInstanceState.getBoolean("firsttAdd");
+//                placesList = savedInstanceState.getStringArrayList("placesList");
+//                mMembersList = savedInstanceState.getStringArrayList("membersList");
+//                mContactsList = savedInstanceState.getStringArrayList("contactsList");
+//            }
+//            super.onRestoreInstanceState(savedInstanceState);
+//        }
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +56,7 @@ import java.util.List;
             mRenewButton = findViewById(R.id.renew_button);
             mName = findViewById(R.id.member_name);
             mContact = findViewById(R.id.member_contact);
+            mTripButton = findViewById(R.id.make_trip);
 
             placesList = new ArrayList<>();
             placesList.add("Add checkpoints");
@@ -54,15 +68,30 @@ import java.util.List;
             mMembersList = new ArrayList<>();
             mContactsList = new ArrayList<>();
 
+            // creating a new trip
+            mTripButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    locations.clear();
+                    placesList.clear();
+                    placesList.add("Add checkpoints");
+                    locations.add(new LatLng(0, 0));
+                    adapter.notifyDataSetChanged();
+
+                }
+            });
+
+
+
             listView = findViewById(R.id.listView);
             adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, placesList);
 
-            if (savedInstanceState != null) {
-                firsttAdd = savedInstanceState.getBoolean("firsttAdd");
-                placesList = savedInstanceState.getStringArrayList("placesList");
-                mMembersList = savedInstanceState.getStringArrayList("membersList");
-                mContactsList = savedInstanceState.getStringArrayList("contactsList");
-            }
+//            if (savedInstanceState != null) {
+//                firsttAdd = savedInstanceState.getBoolean("firsttAdd");
+//                placesList = savedInstanceState.getStringArrayList("placesList");
+//                mMembersList = savedInstanceState.getStringArrayList("membersList");
+//                mContactsList = savedInstanceState.getStringArrayList("contactsList");
+//            }
 
             mGroupAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mMembersList);
             mGroupList.setAdapter(mGroupAdapter);
@@ -180,21 +209,21 @@ import java.util.List;
             }
         }
 
-//        @Override
-//        protected void onResume() {
-//            super.onResume();
-//            SharedPreferences preferences = getApplicationContext().getSharedPreferences("pref", Context.MODE_PRIVATE);
-//            if ((List<String>) preferences.getStringSet("placesList", null) != null) {
-//                placesList = (List<String>) preferences.getStringSet("placesList", null);
-//            }
-//            if ((List<String>) preferences.getStringSet("placesList", null) != null) {
-//                mMembersList = (List<String>) preferences.getStringSet("placesList", null);
-//            }
-//            if ((List<String>) preferences.getStringSet("placesList", null) != null) {
-//                mContactsList = (List<String>) preferences.getStringSet("placesList", null);
-//            }
-//            firsttAdd = preferences.getBoolean("first", true);
-//        }
+        @Override
+        protected void onResume() {
+            super.onResume();
+            SharedPreferences preferences = getApplicationContext().getSharedPreferences("pref", Context.MODE_PRIVATE);
+            if ((List<String>) preferences.getStringSet("placesList", null) != null) {
+                placesList = (List<String>) preferences.getStringSet("placesList", null);
+            }
+            if ((List<String>) preferences.getStringSet("placesList", null) != null) {
+                mMembersList = (List<String>) preferences.getStringSet("placesList", null);
+            }
+            if ((List<String>) preferences.getStringSet("placesList", null) != null) {
+                mContactsList = (List<String>) preferences.getStringSet("placesList", null);
+            }
+            firsttAdd = preferences.getBoolean("first", true);
+        }
 
 //        @Override
 //        protected void onPause() {
@@ -214,13 +243,15 @@ import java.util.List;
 //            editor.commit();
 ////            editor.putStringSet("locations", (Set<String>) locations);
 //        }
+//
 
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            outState.putStringArrayList("placesList", (ArrayList<String>) placesList);
-            outState.putStringArrayList("membersList", (ArrayList<String>) mMembersList);
-            outState.putStringArrayList("contactsList", (ArrayList<String>) mContactsList);
-            outState.putBoolean("first", firsttAdd);
-            super.onSaveInstanceState(outState);
-        }
+
+//        @Override
+//        public void onSaveInstanceState(Bundle outState) {
+//            outState.putStringArrayList("placesList", (ArrayList<String>) placesList);
+//            outState.putStringArrayList("membersList", (ArrayList<String>) mMembersList);
+//            outState.putStringArrayList("contactsList", (ArrayList<String>) mContactsList);
+//            outState.putBoolean("first", firsttAdd);
+//            super.onSaveInstanceState(outState);
+//        }
     }

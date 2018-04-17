@@ -112,6 +112,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onProviderDisabled(String s) {}
         };
 
+        if (MainActivity.locations.size() >= 3){
+            origin = MainActivity.locations.get(1);
+            destination = MainActivity.locations.get(2);
+            startDownload();
+        }
+
         // checking the version to request GPS permission from the user
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -211,16 +217,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 MainActivity.locations.add(latLng);
                 MainActivity.adapter.notifyDataSetChanged();
 
-                if (origin != null && destination != null) {
-                    url = getUrl(origin, destination);
-                    Log.e("URL is", url);
-
-                    MyDownloadTask downloadTask = new MyDownloadTask(mMap);
-                    downloadTask.execute(url);
+                if (MainActivity.locations.size() == 3) {
+                    startDownload();
                 }
             }
         });
 
+    }
+
+    // helper method to get url and start background task to download data from url
+    private void startDownload (){
+        url = getUrl(origin, destination);
+        Log.e("URL is", url);
+        MyDownloadTask downloadTask = new MyDownloadTask(mMap);
+        downloadTask.execute(url);
     }
 
     // helper method to generate URL
@@ -261,10 +271,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         if (origin != null && destination != null) {
-            url = getUrl(origin, destination);
-            Log.e("URL is", url);
-            MyDownloadTask downloadTask = new MyDownloadTask(mMap);
-            downloadTask.execute(url);
+            startDownload();
         }
     }
 
