@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DatabaseDemo</string>
+    <string name="name">Student name</string>
+    <string name="roll_no">roll no.</string>
+    <string name="branch">branch</string>
+    <string name="add_entry">Add entry</string>
+    <string name="search_entry">Search entry</string>
+    <string name="delete_entry">Delete entry</string>
+</resources>
